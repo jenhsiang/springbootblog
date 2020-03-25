@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface ArtcileMapper {
+public interface ArticleMapper {
 
     @Select("select * from article where title like concat('%',#{title},'%')")
     List<Article> findArtcleBytitle(String title);

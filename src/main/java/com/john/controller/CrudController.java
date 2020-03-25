@@ -1,9 +1,11 @@
 package com.john.controller;
 
 import com.john.model.Article;
-import com.john.service.ArtcileMapper;
+import com.john.service.ArticleMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,9 +17,9 @@ import java.util.List;
 
 @Controller
 public class CrudController {
-
+    private Logger logger = LoggerFactory.getLogger("springboot");
     @Resource
-    private ArtcileMapper artcileMapper;
+    private ArticleMapper articleMapper;
 
     //添加頁面
     @RequestMapping ( "add" )
@@ -27,37 +29,14 @@ public class CrudController {
 
     //列出--查詢
     @RequestMapping ( "getArticle" )
-    public String getArticle(int id, Model model) throws Exception {
-        Article article = artcileMapper.getArticleById(id);
+    public String getArticle(Article article, BindingResult bindingResult, Model model) throws Exception {
         model.addAttribute("article", article);
         return "articleShow";
     }
 
-    //添加
-    @RequestMapping ( "addArticle" )
-    public String listArticle(Article article, BindingResult bindingResult) throws Exception {
-        boolean flag = artcileMapper.insertArtcile(article) > 0;
-        return "redirect:listArticle";
-    }
-
-    //删除
-    @RequestMapping ( "deleteArticle" )
-    public String deleteArticle(Article article) throws Exception {
-        artcileMapper.deleteArtcile(article.getId());
-        return "redirect:listArticle";
-    }
-
-    //修改
-    @RequestMapping ( "updateArticle" )
-    public String updateArticle(Article article) throws Exception {
-        boolean flag = artcileMapper.updateArtcile(article) > 0;
-        return "redirect:listArticle";
-    }
-
     //列出--修改
     @RequestMapping ( "findArticle" )
-    public String findArticle(int id, Model model) throws Exception {
-        Article article = artcileMapper.getArticleById(id);
+    public String findArticle(Article article, BindingResult bindingResult, Model model) throws Exception {
         model.addAttribute("article", article);
         return "modify";
     }
@@ -73,13 +52,13 @@ public class CrudController {
 
         PageHelper.startPage(start, size);
 
-        List<Article> articleList = artcileMapper.findArtcleBytitle(title);
+        List<Article> articleList = articleMapper.findArtcleBytitle(title);
         PageInfo<Article> page = new PageInfo<>(articleList);
-        System.out.println("總數量：" + page.getTotal());
-        System.out.println("當前查詢記錄：" + page.getList().size());
-        System.out.println("當前頁碼：" + page.getPageNum());
-        System.out.println("每頁顯示數量：" + page.getPageSize());
-        System.out.println("總頁：" + page.getPages());
+        logger.info("總數量：" + page.getTotal());
+        logger.info("當前查詢記錄：" + page.getList().size());
+        logger.info("當前頁碼：" + page.getPageNum());
+        logger.info("每頁顯示數量：" + page.getPageSize());
+        logger.info("總頁：" + page.getPages());
         model.addAttribute("pages", page);
         model.addAttribute("title", title);
         return "index";

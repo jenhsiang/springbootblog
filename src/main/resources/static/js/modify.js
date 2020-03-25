@@ -19,7 +19,29 @@ $(function () {
             alert("請填寫概述");
             return;
         }
-        $("form").submit();
+        var formData = {
+            'id' 		     : $('input[name=id]').val(),
+            'title' 		 : $('input[name=title]').val(),
+            'summary' 		 : $('input[name=summary]').val(),
+            'mdContent' 	 : $('input[name=mdContent]').val(),
+            'state'          : $('select[name=state]').val()
+        };
+        $.ajax({
+            type:'post',
+            url:"/api/update",
+            data:formData,
+            cache:false,
+            dataType:'json',
+            success:function(data,textStatus, xhr){
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+                if(data == 1){
+                    location.href='/';
+                }
+            },
+            error:function(){}
+        });
     });
 
     $("#back").click(function () {

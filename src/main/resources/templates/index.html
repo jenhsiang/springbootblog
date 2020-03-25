@@ -27,12 +27,12 @@
                     <td colspan="2" width="20%">操作</td>
                 </tr>
                 <tr align="center" th:each="list: ${pages.list}">
-                    <td><a th:href="@{/getArticle(id=${list.id})}">[[${list.title}]]</a></td>
+                    <td><a href="javascript:void(0)" th:id="'article_title_' + ${list.id}">[[${list.title}]]</a></td>
                     <td th:text="${list.summary}"></td>
                     <td th:text="${list.mdContent}"></td>
                     <td th:text="${list.state}==1?'發布':'未發布'"></td>
-                    <td><a th:href="@{/findArticle(id=${list.id})}">編輯</a></td>
-                    <td><a th:href="@{/deleteArticle(id=${list.id})}">删除</a></td>
+                    <td><a href="javascript:void(0)" th:id="'article_edit_' + ${list.id}">編輯</a></td>
+                    <td><a href="javascript:void(0)" th:id="'article_delete_' + ${list.id}">删除</a></td>
                 </tr>
             </table>
         </div>

@@ -1,0 +1,11 @@
+# 檔案名稱 .gitignore
+
+# 忽略 .idea 檔案
+*.idea
+
+# 忽略 .DS_Store 檔案
+*.DS_Store
+
+# 忽略所有 target/classes 目錄下附檔名是 .sqlite3 的檔案
+/target/classes/*.*
+
