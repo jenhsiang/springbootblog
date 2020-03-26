@@ -27,8 +27,8 @@ $(function () {
             'state'          : $('select[name=state]').val()
         };
         $.ajax({
-            type:'post',
-            url:"/api/update",
+            type:'patch',
+            url:"/article",
             data:formData,
             cache:false,
             dataType:'json',

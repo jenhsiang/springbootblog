@@ -2,62 +2,76 @@ package com.john.controller;
 
 import com.john.model.Article;
 import com.john.service.ArticleMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api")
+@Controller
 public class ArticleController {
+
+    private Logger logger = LoggerFactory.getLogger("springboot");
 
     @Resource
     private ArticleMapper articleMapper;
 
-    @ApiOperation(value="添加文章", notes="添加文章")
-    @PostMapping(value = "/addArticle")
+    //添加頁面
+    @ApiOperation(value="添加頁面")
+    @RequestMapping ( "/add" )
     @ResponseStatus(HttpStatus.OK)
-    public int addArticle(@RequestParam("title") String title,@RequestParam("summary") String summary,@RequestParam("mdContent") String mdContent,@RequestParam("state") int state){
-        Article article = new Article();
-        article.setTitle(title);
-        article.setSummary(summary);
-        article.setMdContent(mdContent);
-        article.setState(state);
-        article.setPageView(0);
-        return articleMapper.insertArtcile(article);
+    public String add() {
+        return "add";
     }
 
-    @ApiOperation(value="獲取文章信息", notes="根據id獲取文章信息")
-    @PostMapping(value = "/article/{id}")
+    //文章列表
+    @ApiOperation(value="文章列表")
+    @RequestMapping(value = {
+            "/",
+            "/listArticle"
+    })
     @ResponseStatus(HttpStatus.OK)
-    public Article findArticle(@PathVariable("id") int id) throws NotFoundException
-    {
-        return articleMapper.getArticleById(id);
+    public String listArticle(@RequestParam ( value = "title", defaultValue = "" ) String title,
+                              Model model, @RequestParam ( value = "start", defaultValue = "1" ) int start,
+                              @RequestParam ( value = "size", defaultValue = "5" ) int size) throws Exception {
+
+        PageHelper.startPage(start, size);
+
+        List<Article> articleList = articleMapper.findArtcleBytitle(title);
+        PageInfo<Article> page = new PageInfo<>(articleList);
+        logger.info("總數量：" + page.getTotal());
+        logger.info("當前查詢記錄：" + page.getList().size());
+        logger.info("當前頁碼：" + page.getPageNum());
+        logger.info("每頁顯示數量：" + page.getPageSize());
+        logger.info("總頁：" + page.getPages());
+        model.addAttribute("pages", page);
+        model.addAttribute("title", title);
+        return "index";
     }
 
-    @ApiOperation(value="删除文章", notes="根據id删除文章")
-    @PostMapping(value = "/delete/{id}")
+    //列出--修改
+    @ApiOperation(value="列出--修改")
+    @RequestMapping ( "/findArticle" )
     @ResponseStatus(HttpStatus.OK)
-    public int deleteUser(@PathVariable("id") int id)
-    {
-       return articleMapper.deleteArtcile(id);
+    public String findArticle(Article article, BindingResult bindingResult, Model model) throws Exception {
+        model.addAttribute("article", article);
+        return "modify";
     }
 
-    @ApiOperation(value="更新文章", notes="更新文章")
-    @PostMapping(value = "/update")
+    //列出--查詢
+    @ApiOperation(value="列出--查詢")
+    @RequestMapping ( "/getArticle" )
     @ResponseStatus(HttpStatus.OK)
-    public int updateUser(@RequestParam("id") int id,@RequestParam("title") String title,@RequestParam("summary") String summary,@RequestParam("mdContent") String mdContent,@RequestParam("state") int state)
-    {
-        Article article = articleMapper.getArticleById(id);
-        article.setTitle(title);
-        article.setSummary(summary);
-        article.setMdContent(mdContent);
-        article.setState(state);
-        article.setPageView(0);
-        return articleMapper.updateArtcile(article);
+    public String getArticle(Article article, BindingResult bindingResult, Model model) throws Exception {
+        model.addAttribute("article", article);
+        return "articleShow";
     }
-
 }

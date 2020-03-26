@@ -1,0 +1,5 @@
+com/john/service/ArticleMapper.class
+com/john/controller/CrudController.class
+com/john/Application.class
+com/john/model/Article.class
+com/john/controller/ArticleController.class

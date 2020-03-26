@@ -27,20 +27,20 @@ $(function () {
             sendAjax(id,2);
         });
     });
-
 });
+
 function sendAjax(id,choose){
-    var url;
+    var ajax_type;
     if(choose == 0){
-        url = '/api/article/' + id;
+        ajax_type = 'GET';
     }else if(choose == 1){
-        url = '/api/article/' + id
+        ajax_type = 'GET';
     }else if(choose == 2){
-        url = '/api/delete/' + id
+        ajax_type = 'DELETE';
     }
     $.ajax({
-        type:'post',
-        url:url,
+        type:ajax_type,
+        url:'/article/' + id,
         data:{},
         cache:false,
         dataType:'json',
@@ -49,9 +49,7 @@ function sendAjax(id,choose){
             console.log(textStatus);
             console.log(xhr);
             if(choose == 2){
-                if(data == 1) {
-                    location.reload();
-                }
+                location.reload();
             }else {
                 var body = $(document.body),
                     form = $("<form method='post'></form>"),
@@ -73,5 +71,5 @@ function sendAjax(id,choose){
             }
         },
         error:function(){}
-    });
+    })
 }

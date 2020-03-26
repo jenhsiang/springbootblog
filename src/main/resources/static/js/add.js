@@ -27,7 +27,7 @@ $(function () {
         };
         $.ajax({
             type:'post',
-            url:"/api/addArticle",
+            url:"/article",
             data:formData,
             cache:false,
             dataType:'json',

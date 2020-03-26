@@ -2,66 +2,51 @@ package com.john.controller;
 
 import com.john.model.Article;
 import com.john.service.ArticleMapper;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
-@Controller
+@RestController
 public class CrudController {
-    private Logger logger = LoggerFactory.getLogger("springboot");
+
     @Resource
     private ArticleMapper articleMapper;
 
-    //添加頁面
-    @RequestMapping ( "add" )
-    public String add() {
-        return "add";
-    }
-
     //列出--查詢
-    @RequestMapping ( "getArticle" )
-    public String getArticle(Article article, BindingResult bindingResult, Model model) throws Exception {
-        model.addAttribute("article", article);
-        return "articleShow";
+    @ApiOperation(value="獲取文章列表", notes="獲取文章列表")
+    @GetMapping( "/article/{id}" )
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Article> getArticle(@PathVariable(value = "id") int id) throws Exception {
+        Article article = articleMapper.getArticleById(id);
+        return ResponseEntity.ok().body(article);
     }
 
-    //列出--修改
-    @RequestMapping ( "findArticle" )
-    public String findArticle(Article article, BindingResult bindingResult, Model model) throws Exception {
-        model.addAttribute("article", article);
-        return "modify";
+    //添加
+    @ApiOperation(value="添加文章", notes="添加文章")
+    @PostMapping ( "/article" )
+    @ResponseStatus(HttpStatus.CREATED)
+    public int addArticle(Article article, BindingResult bindingResult) throws Exception {
+        return articleMapper.insertArtcile(article);
     }
 
-    //文章列表
-    @RequestMapping(value = {
-            "/",
-            "/listArticle"
-    })
-    public String listArticle(@RequestParam ( value = "title", defaultValue = "" ) String title,
-                              Model model, @RequestParam ( value = "start", defaultValue = "1" ) int start,
-                              @RequestParam ( value = "size", defaultValue = "5" ) int size) throws Exception {
+    //删除
+    @ApiOperation(value="删除文章", notes="根據id删除文章")
+    @DeleteMapping ( "/article/{id}" )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public int deleteArticle(@PathVariable(value = "id") int id) throws Exception {
+        return articleMapper.deleteArtcile(id);
+    }
 
-        PageHelper.startPage(start, size);
-
-        List<Article> articleList = articleMapper.findArtcleBytitle(title);
-        PageInfo<Article> page = new PageInfo<>(articleList);
-        logger.info("總數量：" + page.getTotal());
-        logger.info("當前查詢記錄：" + page.getList().size());
-        logger.info("當前頁碼：" + page.getPageNum());
-        logger.info("每頁顯示數量：" + page.getPageSize());
-        logger.info("總頁：" + page.getPages());
-        model.addAttribute("pages", page);
-        model.addAttribute("title", title);
-        return "index";
+    //修改
+    @ApiOperation(value="修改文章", notes="修改文章")
+    @PatchMapping ( "/article" )
+    @ResponseStatus(HttpStatus.CREATED)
+    public int updateArticle( Article article, BindingResult bindingResult) throws Exception {
+        return articleMapper.updateArtcile(article);
     }
 
 
