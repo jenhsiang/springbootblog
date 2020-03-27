@@ -28,7 +28,7 @@ $(function () {
         };
         $.ajax({
             type:'patch',
-            url:"/article",
+            url:"/api/article",
             data:formData,
             cache:false,
             dataType:'json',

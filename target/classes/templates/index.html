@@ -8,15 +8,15 @@
 <script type="text/javascript" th:src="@{/js/index.js}"></script>
 <body>
 <div align="center">
-    <form action="#" th:action="@{/listArticle}" method="post">
+    <form action="#" th:action="@{/}" method="post">
         <label for="title">查詢：</label>
         <input id="title" name="title" th:value="${title}">
         <button id="search-btn" name="search-btn">搜索</button>
     </form>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a th:href="@{/add}">添加内容</a>
+    <a th:href="@{/articles/new}">添加内容</a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a th:href="@{/listArticle}">全部重整</a>
+    <a th:href="@{/}">全部重整</a>
     <table width="100%" border="1">
 
         <tr align="center">
@@ -27,24 +27,24 @@
             <td colspan="2" width="20%">操作</td>
         </tr>
         <tr align="center" th:each="list: ${pages.list}">
-            <td><a href="javascript:void(0)" th:id="'article_title_' + ${list.id}">[[${list.title}]]</a></td>
+            <td><a th:href="@{/articles/{id}(id = ${list.id})}">[[${list.title}]]</a></td>
             <td th:text="${list.summary}"></td>
             <td th:text="${list.mdContent}"></td>
             <td th:text="${list.state}==1?'發布':'未發布'"></td>
-            <td><a href="javascript:void(0)" th:id="'article_edit_' + ${list.id}">編輯</a></td>
+            <td><a th:href="@{/articles/{id}/update(id=${list.id})}" >編輯</a></td>
             <td><a href="javascript:void(0)" th:id="'article_delete_' + ${list.id}">删除</a></td>
         </tr>
     </table>
 </div>
 <div align="center">
     <a th:unless="${pages.isFirstPage}"
-       th:href="@{/listArticle(title=${title})}">首 页</a>
+       th:href="@{/(title=${title})}">首 页</a>
     <a th:unless="${pages.isFirstPage}"
-       th:href="@{/listArticle(start=${pages.isHasPreviousPage()}?${pages.getPrePage()}:1, title=${title})}">上一頁</a>
+       th:href="@{/(start=${pages.isHasPreviousPage()}?${pages.getPrePage()}:1, title=${title})}">上一頁</a>
     <a th:unless="${pages.isLastPage}"
-       th:href="@{/listArticle(start=${pages.isHasNextPage()}?${pages.getNextPage()}:${pages.getPages()}, title=${title})}">下一頁</a>
+       th:href="@{/(start=${pages.isHasNextPage()}?${pages.getNextPage()}:${pages.getPages()}, title=${title})}">下一頁</a>
     <a th:unless="${pages.isLastPage}"
-       th:href="@{/listArticle(start=${pages.getPages()}, title=${title})}">末 页</a>
+       th:href="@{/(start=${pages.getPages()}, title=${title})}">末 页</a>
 </div>
 
 <script type="text/javascript">

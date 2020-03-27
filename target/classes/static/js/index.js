@@ -40,7 +40,7 @@ function sendAjax(id,choose){
     }
     $.ajax({
         type:ajax_type,
-        url:'/article/' + id,
+        url:'/api/article/' + id,
         data:{},
         cache:false,
         dataType:'json',
